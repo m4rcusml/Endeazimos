@@ -1,9 +1,12 @@
 import { NavigationContainer } from '@react-navigation/native';
+import { AuthProvider } from './auth';
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <NavigationContainer>
-      {children}
+      <AuthProvider>
+        {children}
+      </AuthProvider>
     </NavigationContainer>
   )
 }

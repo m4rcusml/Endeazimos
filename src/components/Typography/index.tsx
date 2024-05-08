@@ -1,11 +1,15 @@
+import { StyleProp, TextStyle } from 'react-native';
 import { StyledTextProps, Text } from './styles';
 
 type TypographyProps = StyledTextProps & {
-
+  children?: React.ReactNode;
+  style?: StyleProp<TextStyle>;
 }
 
-export function Typography({}: TypographyProps) {
+export function Typography({ children, ...rest }: TypographyProps) {
   return (
-    <Text></Text>
+    <Text {...rest}>
+      {children}
+    </Text>
   )
 }
