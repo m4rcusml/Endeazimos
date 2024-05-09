@@ -15,10 +15,16 @@ import { Typography } from '@components/Typography';
 import { Textfield } from '@components/Textfield';
 
 const SignUpDataSchema = z.object({
+  name: z.string({ required_error: 'Preencha este campo' })
+    .min(1, 'Preencha este campo'),
   email: z.string({ required_error: 'Preencha este campo' })
     .min(1, 'Preencha este campo')
     .email('Use um email válido'),
+  telephone: z.string({ required_error: 'Preencha este campo' })
+    .min(1, 'Preencha este campo'),
   password: z.string({ required_error: 'Preencha este campo' })
+    .min(1, 'Preencha este campo'),
+  passwordConfirm: z.string({ required_error: 'Preencha este campo' })
     .min(1, 'Preencha este campo'),
 });
 
@@ -47,19 +53,77 @@ export function SignUp() {
       </Typography>
 
       <View style={styles.inputsContainer}>
-        <Textfield placeholder='Nome' />
-        <Textfield placeholder='Email' />
-        <Textfield placeholder='Telefone' />
+        <Textfield
+          placeholder='Nome'
+          control={control}
+          name='name'
+        />
+        <Typography
+          children={errors.name?.message}
+          style={styles.errors}
+          alignment='right'
+          color='#ff7777'
+          size={12}
+        />
 
-        <Textfield placeholder='Senha' />
-        <Textfield placeholder='Confirmar senha' />
+        <Textfield
+          placeholder='Email'
+          control={control}
+          name='email'
+        />
+        <Typography
+          children={errors.email?.message}
+          style={styles.errors}
+          alignment='right'
+          color='#ff7777'
+          size={12}
+        />
+        
+        <Textfield
+          placeholder='Telefone'
+          control={control}
+          name='telephone'
+        />
+        <Typography
+          children={errors.telephone?.message}
+          style={styles.errors}
+          alignment='right'
+          color='#ff7777'
+          size={12}
+        />
+
+        <Textfield
+          placeholder='Senha'
+          control={control}
+          name='password'
+        />
+        <Typography
+          children={errors.password?.message}
+          style={styles.errors}
+          alignment='right'
+          color='#ff7777'
+          size={12}
+        />
+
+        <Textfield
+          placeholder='Confirmar senha'
+          control={control}
+          name='passwordConfirm'
+        />
+        <Typography
+          children={errors.passwordConfirm?.message}
+          style={styles.errors}
+          alignment='right'
+          color='#ff7777'
+          size={12}
+        />
 
       </View>
       <GenericButton
         filled
         title='Confirmar'
         style={styles.confirmButton}
-        onPress={handleCreateAccount}
+        onPress={handleSubmit(handleCreateAccount)}
       />
     </LinearGradient>
   )
@@ -79,5 +143,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 32,
     right: 32
+  },
+  errors: {
+    marginTop: -20,
   }
 });

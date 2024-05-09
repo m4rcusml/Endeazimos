@@ -32,7 +32,7 @@ export function SignIn() {
   const { handleSubmit, control, formState: { errors } } = useForm<SignInDataType>({
     resolver: zodResolver(SignInDataSchema)
   });
-  const { top, bottom, left, right } = useSafeAreaInsets();
+  const { top, bottom } = useSafeAreaInsets();
   const { logIn } = useAuth();
 
   function handleCreateAccount() {
@@ -49,8 +49,6 @@ export function SignIn() {
       style={[styles.background, {
         paddingTop: top + 30,
         paddingBottom: bottom,
-        paddingLeft: left,
-        paddingRight: right
       }]}
     >
       <Logo width={80} height={80} />
@@ -123,11 +121,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    gap: 50,
+    gap: 35,
   },
   secondaryContainer: {
     width: '70%',
-    gap: 25,
+    gap: 20,
   },
   errors: {
     marginTop: -20,
