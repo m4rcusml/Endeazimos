@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { CampanhaButton, CampanhaProps } from '@components/CampanhaButton';
+import { Typography } from '@components/Typography';
 
 const fakeData: CampanhaProps[] = [
   {
@@ -31,6 +32,7 @@ export function Campanhas() {
     >
       <FlatList
         data={fakeData}
+        ListHeaderComponent={() => <Typography size={28} weight={600} alignment='center' children={'Campanhas'} />}
         renderItem={({ item }) => <CampanhaButton data={item} />}
         contentContainerStyle={styles.scroll}
       />
@@ -44,7 +46,8 @@ const styles = StyleSheet.create({
   },
   scroll: {
     paddingHorizontal: 16,
-    paddingBottom: 20,
+    paddingBottom: 100,
+    paddingTop: 20,
     gap: 20
   }
 });

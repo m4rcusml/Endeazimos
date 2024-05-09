@@ -89,11 +89,14 @@ export function SignIn() {
           />
         </View>
 
-        <TouchableOpacity children={(
-          <Typography alignment='center'>
-            Esqueceu a senha?
-          </Typography>
-        )} />
+        <TouchableOpacity
+          style={{ marginTop: -10, marginBottom: 15 }}
+          children={(
+            <Typography alignment='center' style={{ textDecorationLine: 'underline' }}>
+              Esqueceu a senha?
+            </Typography>
+          )}
+        />
 
         <GenericButton
           filled
@@ -101,6 +104,7 @@ export function SignIn() {
           onPress={handleSubmit(handleLogin)}
         />
       </View>
+
 
       <Typography size={20}>
         ou
@@ -112,7 +116,7 @@ export function SignIn() {
           filled
           icon={() => <GoogleLogo height={34} width={34} />}
           style={{ alignSelf: 'center', height: 52, width: 52 }}
-          onPress={() => {}}
+          onPress={() => { }}
         />
       </View>
     </LinearGradient>

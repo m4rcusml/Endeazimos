@@ -26,21 +26,29 @@ const SignUpDataSchema = z.object({
     .min(1, 'Preencha este campo'),
   passwordConfirm: z.string({ required_error: 'Preencha este campo' })
     .min(1, 'Preencha este campo'),
-});
+})
+  .refine(({ password, passwordConfirm }) => password === passwordConfirm, {
+    path: ['passwordConfirm'],
+    message: 'As senhas devem ser iguais'
+  });
 
 type SignUpDataType = z.infer<typeof SignUpDataSchema>;
 
 export function SignUp() {
-  const { navigate } = useNavigation<NavigationProp<AuthRoutesParams, 'signup'>>();
+  const { navigate, goBack } = useNavigation<NavigationProp<AuthRoutesParams, 'signup'>>();
   const { handleSubmit, control, formState: { errors } } = useForm<SignUpDataType>({
     resolver: zodResolver(SignUpDataSchema)
   });
   const { bottom } = useSafeAreaInsets();
   const { signUp } = useAuth();
 
-  function handleCreateAccount(data: SignUpDataType) {
+  async function handleCreateAccount(data: SignUpDataType) {
     console.log('cria conta');
-    signUp(data);
+    const response = await signUp(data);
+
+    if(response) {
+      goBack();
+    }
   }
 
   return (
@@ -86,7 +94,7 @@ export function SignUp() {
           <Textfield
             placeholder='Telefone'
             control={control}
-            name='telephone'
+            name='phoneNumber'
           />
           <Typography
             children={errors.phoneNumber?.message}

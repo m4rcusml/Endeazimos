@@ -28,6 +28,7 @@ export function StackRoutes() {
         headerTransparent: true,
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
+        animation: 'ios'
       }}
     >
       <Stack.Screen
