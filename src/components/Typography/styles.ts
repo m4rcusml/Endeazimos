@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components/native';
 export type StyledTextProps = Partial<{
   // weight: 'light' | 'normal' | 'bold';
   // size: 'small' | 'normal' | 'large';
-  alignment: 'left' | 'center' | 'right';
+  alignment: 'left' | 'center' | 'right' | 'justify';
   weight: number;
   size: number;
   color: string;

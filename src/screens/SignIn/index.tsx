@@ -47,7 +47,7 @@ export function SignIn() {
     <LinearGradient
       colors={['#125266', '#104C5F']}
       style={[styles.background, {
-        paddingTop: top + 30,
+        paddingTop: top,
         paddingBottom: bottom,
       }]}
     >
@@ -58,33 +58,36 @@ export function SignIn() {
       </Typography>
 
       <View style={styles.secondaryContainer}>
-        <Textfield
-          filled
-          placeholder='Email'
-          control={control}
-          name='email'
-        />
-        <Typography
-          children={errors.email?.message}
-          style={styles.errors}
-          alignment='right'
-          color='#ff7777'
-          size={12}
-        />
+        <View style={styles.fieldContainer}>
+          <Textfield
+            filled
+            placeholder='Email'
+            control={control}
+            name='email'
+          />
+          <Typography
+            children={errors.email?.message}
+            alignment='right'
+            color='#ff7777'
+            size={12}
+          />
+        </View>
 
-        <Textfield
-          filled
-          placeholder='Senha'
-          control={control}
-          name='password'
-        />
-        <Typography
-          children={errors.password?.message}
-          style={styles.errors}
-          alignment='right'
-          color='#ff7777'
-          size={12}
-        />
+        <View style={styles.fieldContainer}>
+          <Textfield
+            filled
+            isPasswordField
+            placeholder='Senha'
+            control={control}
+            name='password'
+          />
+          <Typography
+            children={errors.password?.message}
+            alignment='right'
+            color='#ff7777'
+            size={12}
+          />
+        </View>
 
         <TouchableOpacity children={(
           <Typography alignment='center'>
@@ -107,8 +110,8 @@ export function SignIn() {
         <GenericButton title='Criar conta' onPress={handleCreateAccount} />
         <GenericButton
           filled
-          icon={() => <GoogleLogo height={34} width={32} />}
-          style={{ alignSelf: 'center', height: 56, width: 56 }}
+          icon={() => <GoogleLogo height={34} width={34} />}
+          style={{ alignSelf: 'center', height: 52, width: 52 }}
           onPress={() => {}}
         />
       </View>
@@ -121,13 +124,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    gap: 35,
+    gap: 30,
   },
   secondaryContainer: {
     width: '70%',
-    gap: 20,
+    gap: 15,
   },
-  errors: {
-    marginTop: -20,
+  fieldContainer: {
+    gap: 5
   }
 });

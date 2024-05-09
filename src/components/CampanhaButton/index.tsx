@@ -3,18 +3,32 @@ import { Container, InfoContainer } from './styles';
 import { Typography } from '@components/Typography';
 import { AntDesign } from '@expo/vector-icons';
 import { ProgressBar } from '@components/ProgressBar';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { StackRoutesParams } from '@routes/app.routes';
 
-type Props = {
+export type CampanhaProps = {
   name: string;
+  description: string;
+  requiredValue: number;
   totalRaised: number;
   image: string;
 }
 
-export function CampanhaButton({ name, image, totalRaised }: Props) {
+type Props = {
+  data: CampanhaProps;
+}
+
+export function CampanhaButton({ data }: Props) {
+  const { navigate } = useNavigation<NavigationProp<StackRoutesParams>>();
+
+  function openDetails() {
+    navigate('campanhaDetails', { data });
+  }
+
   return (
-    <Container>
+    <Container onPress={openDetails}>
       <Image
-        source={image ? { uri: image } : undefined}
+        source={data.image ? { uri: data.image } : undefined}
         width={120}
         height={120}
         borderRadius={10}
@@ -23,14 +37,14 @@ export function CampanhaButton({ name, image, totalRaised }: Props) {
 
       <InfoContainer>
         <Typography color='black' weight={500} size={18}>
-          {name}
+          {data.name}
         </Typography>
 
         <Typography color='#0008' size={14}>
-          Total arrecadado: {totalRaised}%
+          Total arrecadado: {data.totalRaised}%
         </Typography>
 
-        <ProgressBar progress={totalRaised} />
+        <ProgressBar progress={data.totalRaised} />
       </InfoContainer>
 
       <AntDesign

@@ -1,66 +1,52 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { TabRoutes } from './tab.routes';
 
-import {
-  MaterialCommunityIcons,
-  FontAwesome6,
-  Foundation,
-  Octicons,
-  MaterialIcons
-} from '@expo/vector-icons';
+import { CampanhaProps } from '@components/CampanhaButton';
+import { InstituicaoProps } from '@components/HomeSection/Item';
 
-import { Home } from '@screens/Home';
-import { Campanhas } from '@screens/Campanhas';
-import { Profile } from '@screens/Profile';
+import { CampanhaDetails } from '@screens/CampanhaDetails';
+import { Instituicao } from '@screens/Instituicao';
+import { Voluntariado } from '@screens/Voluntariado';
 
-const App = createBottomTabNavigator();
+export type StackRoutesParams = {
+  main: undefined;
+  instituicao: { data: InstituicaoProps }
+  voluntariado: { data: InstituicaoProps },
+  campanhaDetails: { data: CampanhaProps };
+}
 
-export function AppRoutes() {
+const Stack = createNativeStackNavigator<StackRoutesParams>();
+
+export function StackRoutes() {
   return (
-    <App.Navigator
+    <Stack.Navigator
+      initialRouteName='main'
       screenOptions={{
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: '#1c7ac7'
+        title: '',
+        headerTintColor: 'white',
+        headerShadowVisible: false,
+        headerTransparent: true,
+        statusBarColor: 'transparent',
+        statusBarTranslucent: true,
       }}
     >
-      <App.Screen
-        name='home'
-        component={Home}
-        options={{
-          tabBarIcon: ({ color, size, focused }) => (
-            focused
-              ? <Foundation name='home' size={size + 1} color={color} />
-              : <Octicons name='home' size={size - 1} color={color} />
-          )
-        }}
+      <Stack.Screen
+        name='main'
+        component={TabRoutes}
+        options={{ headerShown: false }}
       />
-      <App.Screen
-        name='campanhas'
-        component={Campanhas}
-        options={{
-          tabBarIcon: ({ color, size, focused }) => (
-            <MaterialCommunityIcons name={focused ? 'widgets' : 'widgets-outline'} size={size} color={color} />
-          )
-        }}
+      <Stack.Screen
+        name='instituicao'
+        component={Instituicao}
       />
-      <App.Screen
-        name='notifications'
-        component={Home}
-        options={{
-          tabBarIcon: ({ color, size, focused }) => (
-            <MaterialIcons name={focused ? 'notifications' : 'notifications-none'} size={size + 2} color={color} />
-          )
-        }}
+      <Stack.Screen
+        name='voluntariado'
+        component={Voluntariado}
       />
-      <App.Screen
-        name='profile'
-        component={Profile}
-        options={{
-          tabBarIcon: ({ color, size, focused }) => (
-            <FontAwesome6 name={focused ? 'user-large' : 'user'} size={focused ? size - 6 : size - 4} color={color} />
-          )
-        }}
+      <Stack.Screen
+        name='campanhaDetails'
+        component={CampanhaDetails}
       />
-    </App.Navigator>
+    </Stack.Navigator>
   )
 }

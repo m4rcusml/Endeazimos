@@ -14,12 +14,15 @@ export function GenericButton({ title, icon, filled, onPress, style, ...rest }: 
   return (
     <Container filled={filled} onPress={onPress} style={style} {...rest}>
       {icon && icon()}
-      <Typography
-        color={filled ? 'black' : 'white'}
-        size={18}
-      >
-        {title}
-      </Typography>
+      {
+        title
+        && <Typography
+          color={filled ? 'black' : 'white'}
+          size={18}
+        >
+          {title}
+        </Typography>
+      }
     </Container>
   )
 }

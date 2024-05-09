@@ -20,7 +20,7 @@ const SignUpDataSchema = z.object({
   email: z.string({ required_error: 'Preencha este campo' })
     .min(1, 'Preencha este campo')
     .email('Use um email válido'),
-  telephone: z.string({ required_error: 'Preencha este campo' })
+  phoneNumber: z.string({ required_error: 'Preencha este campo' })
     .min(1, 'Preencha este campo'),
   password: z.string({ required_error: 'Preencha este campo' })
     .min(1, 'Preencha este campo'),
@@ -38,8 +38,9 @@ export function SignUp() {
   const { bottom } = useSafeAreaInsets();
   const { signUp } = useAuth();
 
-  function handleCreateAccount() {
+  function handleCreateAccount(data: SignUpDataType) {
     console.log('cria conta');
+    signUp(data);
   }
 
   return (
@@ -53,71 +54,77 @@ export function SignUp() {
       </Typography>
 
       <View style={styles.inputsContainer}>
-        <Textfield
-          placeholder='Nome'
-          control={control}
-          name='name'
-        />
-        <Typography
-          children={errors.name?.message}
-          style={styles.errors}
-          alignment='right'
-          color='#ff7777'
-          size={12}
-        />
+        <View style={styles.fieldContainer}>
+          <Textfield
+            placeholder='Nome'
+            control={control}
+            name='name'
+          />
+          <Typography
+            children={errors.name?.message}
+            alignment='right'
+            color='#ff7777'
+            size={12}
+          />
+        </View>
 
-        <Textfield
-          placeholder='Email'
-          control={control}
-          name='email'
-        />
-        <Typography
-          children={errors.email?.message}
-          style={styles.errors}
-          alignment='right'
-          color='#ff7777'
-          size={12}
-        />
+        <View style={styles.fieldContainer}>
+          <Textfield
+            placeholder='Email'
+            control={control}
+            name='email'
+          />
+          <Typography
+            children={errors.email?.message}
+            alignment='right'
+            color='#ff7777'
+            size={12}
+          />
+        </View>
         
-        <Textfield
-          placeholder='Telefone'
-          control={control}
-          name='telephone'
-        />
-        <Typography
-          children={errors.telephone?.message}
-          style={styles.errors}
-          alignment='right'
-          color='#ff7777'
-          size={12}
-        />
+        <View style={styles.fieldContainer}>
+          <Textfield
+            placeholder='Telefone'
+            control={control}
+            name='telephone'
+          />
+          <Typography
+            children={errors.phoneNumber?.message}
+            alignment='right'
+            color='#ff7777'
+            size={12}
+          />
+        </View>
 
-        <Textfield
-          placeholder='Senha'
-          control={control}
-          name='password'
-        />
-        <Typography
-          children={errors.password?.message}
-          style={styles.errors}
-          alignment='right'
-          color='#ff7777'
-          size={12}
-        />
+        <View style={styles.fieldContainer}>
+          <Textfield
+            isPasswordField
+            placeholder='Senha'
+            control={control}
+            name='password'
+          />
+          <Typography
+            children={errors.password?.message}
+            alignment='right'
+            color='#ff7777'
+            size={12}
+          />
+        </View>
 
-        <Textfield
-          placeholder='Confirmar senha'
-          control={control}
-          name='passwordConfirm'
-        />
-        <Typography
-          children={errors.passwordConfirm?.message}
-          style={styles.errors}
-          alignment='right'
-          color='#ff7777'
-          size={12}
-        />
-
+        <View style={styles.fieldContainer}>
+          <Textfield
+            isPasswordField
+            placeholder='Confirmar senha'
+            control={control}
+            name='passwordConfirm'
+          />
+          <Typography
+            children={errors.passwordConfirm?.message}
+            alignment='right'
+            color='#ff7777'
+            size={12}
+          />
+        </View>
       </View>
       <GenericButton
         filled
@@ -137,14 +144,14 @@ const styles = StyleSheet.create({
     paddingTop: 30
   },
   inputsContainer: {
-    gap: 25
+    gap: 15
   },
   confirmButton: {
     position: 'absolute',
     bottom: 32,
     right: 32
   },
-  errors: {
-    marginTop: -20,
+  fieldContainer: {
+    gap: 5
   }
 });

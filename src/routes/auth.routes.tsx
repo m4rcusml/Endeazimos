@@ -2,7 +2,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SignIn } from '@screens/SignIn';
 
 import Logo from '@assets/logo.svg';
-import { View } from 'react-native';
 import { SignUp } from '@screens/SignUp';
 
 export type AuthRoutesParams = {
@@ -20,7 +19,9 @@ export function AuthRoutes() {
       headerTitleAlign: 'center',
       headerStyle: { backgroundColor: '#125266' },
       headerTintColor: 'white',
-      headerShadowVisible: false
+      headerShadowVisible: false,
+      statusBarColor: 'transparent',
+      statusBarTranslucent: true,
       }}
     >
       <Auth.Screen

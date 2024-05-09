@@ -14,6 +14,7 @@ interface AuthContextDataType {
 
   logIn(data: { email: string, password: string }): Promise<boolean>;
   signUp(data: UserType): Promise<boolean>;
+  logOut(): Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextDataType>({} as AuthContextDataType);
@@ -41,13 +42,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return true;
   }
 
+  async function logOut() {
+    setUser(undefined);
+  }
+
   return (
     <AuthContext.Provider
       value={{
         isLogged: !!user,
         user,
         logIn,
-        signUp
+        logOut,
+        signUp,
       }}
     >
       {children}
