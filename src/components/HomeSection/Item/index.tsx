@@ -9,6 +9,9 @@ export type InstituicaoProps = {
   name: string;
   image: string;
   description: string;
+  namedAddress: string;
+  openingHours: string;
+  telephone: string;
   location: {
     latitude: number,
     longitude: number

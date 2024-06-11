@@ -8,9 +8,12 @@ import MapView, { Marker } from 'react-native-maps';
 import { Typography } from '@components/Typography';
 import { GenericButton } from '@components/GenericButton';
 import { FontAwesome, FontAwesome6 } from '@expo/vector-icons';
+import { CaretDown, CaretUp } from 'phosphor-react-native';
+import { useState } from 'react';
 
 export function Instituicao() {
   const route = useRoute<RouteProp<StackRoutesParams, 'instituicao'>>();
+  const [isOpenned, setIsOppened] = useState(false);
   const { navigate } = useNavigation<NavigationProp<StackRoutesParams>>();
   const { top } = useSafeAreaInsets();
   const { data } = route.params;
@@ -41,26 +44,48 @@ export function Instituicao() {
           {data.name}
         </Typography>
 
-        <Typography alignment='justify'>
-          {data.description}
-        </Typography>
-
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: data.location.latitude,
-            longitude: data.location.longitude,
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.001
-          }}
-        >
-          <Marker
-            coordinate={{
+        <View style={styles.mapContainer}>
+          <MapView
+            style={styles.map}
+            initialRegion={{
               latitude: data.location.latitude,
-              longitude: data.location.longitude
+              longitude: data.location.longitude,
+              latitudeDelta: 0.001,
+              longitudeDelta: 0.001
             }}
-          />
-        </MapView>
+          >
+            <Marker
+              coordinate={{
+                latitude: data.location.latitude,
+                longitude: data.location.longitude
+              }}
+            />
+          </MapView>
+        </View>
+
+        <View style={{ gap: 20 }}>
+          <Typography>
+            <Typography weight={600}>Endereço:</Typography> {data.namedAddress}
+          </Typography>
+
+          <Typography>
+            <Typography weight={600}>Horário  de funcionamento:</Typography> {data.openingHours}
+          </Typography>
+
+          <Typography>
+            <Typography weight={600}>Telefone:</Typography> {data.telephone}
+          </Typography>
+        </View>
+
+        <View style={{ borderWidth: 0.5, borderColor: 'black', borderRadius: 15 }}>
+          <TouchableOpacity style={styles.seeMore} activeOpacity={0.6} onPress={() => setIsOppened(prev => !prev)}>
+            <Typography>Saiba mais</Typography>
+            {isOpenned ? <CaretUp color='white' /> : <CaretDown color='white' />}
+          </TouchableOpacity>
+          {isOpenned && (<View style={{ padding: 10 }}>
+            <Typography>{data.description}</Typography>
+          </View>)}
+        </View>
 
         <View style={styles.actionsContainer}>
           <GenericButton
@@ -92,6 +117,10 @@ const styles = StyleSheet.create({
     paddingTop: 80,
     gap: 40,
   },
+  mapContainer: {
+    borderRadius: 20,
+    overflow: 'hidden'
+  },
   map: {
     width: '100%',
     height: 200,
@@ -100,5 +129,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  seeMore: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 15,
+    borderRadius: 15,
+    borderWidth: 0.5,
+    borderColor: 'black'
   }
 });

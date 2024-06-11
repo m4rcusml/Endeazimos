@@ -8,19 +8,19 @@ import { UserCard } from '@components/UserCard';
 import { GenericButton } from '@components/GenericButton';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Typography } from '@components/Typography';
+import { CaretRight, HandHeart, Lock, UserPlus } from 'phosphor-react-native';
 
-const RedirectButton = ({ title, onPress }: { title: string, onPress(): void }) => (
+const RedirectButton = ({ title, icon, onPress }: { title: string, icon(): void, onPress(): void }) => (
   <TouchableOpacity
     onPress={onPress}
     activeOpacity={0.6}
     style={styles.buttonBox}
     children={(
       <>
+        {icon && icon()}
         <Typography size={18}>{title}</Typography>
-        <AntDesign
-          style={styles.caretStyle}
+        <CaretRight
           color='white'
-          name='right'
           size={20}
         />
       </>
@@ -57,31 +57,18 @@ export function Profile() {
         <View style={styles.buttonsContainer}>
           <RedirectButton
             onPress={() => {}}
-            title='Email'
+            icon={() => <UserPlus color='white' />}
+            title='Expansão de cadastro'
           />
           <RedirectButton
             onPress={() => {}}
-            title='Instagram'
+            icon={() => <Lock color='white' />}
+            title='Alterar senha'
           />
           <RedirectButton
             onPress={() => {}}
-            title='Twitter'
-          />
-          <RedirectButton
-            onPress={() => {}}
-            title='Métodos de pagamento'
-          />
-          <RedirectButton
-            onPress={() => {}}
-            title='Mudar senha'
-          />
-          <RedirectButton
-            onPress={() => {}}
-            title='Sobre o app'
-          />
-          <RedirectButton
-            onPress={() => {}}
-            title='Política de privacidade'
+            icon={() => <HandHeart color='white' />}
+            title='Doações'
           />
         </View>
 
