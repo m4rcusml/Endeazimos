@@ -1,6 +1,6 @@
 import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StackRoutesParams } from '@routes/app.routes';
 
@@ -9,6 +9,7 @@ import { ProgressBar } from '@components/ProgressBar';
 
 export function CampanhaDetails() {
   const { top } = useSafeAreaInsets();
+  const { navigate } = useNavigation<NavigationProp<StackRoutesParams>>();
   const route = useRoute<RouteProp<StackRoutesParams, 'campanhaDetails'>>();
   const { data } = route.params;
 
@@ -50,9 +51,10 @@ export function CampanhaDetails() {
         <TouchableOpacity
           activeOpacity={0.4}
           style={styles.doarButton}
+          onPress={() => navigate('contribuir', { data })}
           children={(
             <Typography weight={600}>
-              Doar
+              Contribuir
             </Typography>
           )}
         />

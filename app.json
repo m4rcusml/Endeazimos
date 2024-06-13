@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#125266"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,9 +20,14 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#125266"
       },
-      "package": "com.m4rcusml.Endeazimos"
+      "package": "com.m4rcusml.Endeazimos",
+       "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBq-AFO17rWZEItZu25nhRloNm2gd1bUE4"
+        }
+       }
     },
     "web": {
       "favicon": "./assets/favicon.png"

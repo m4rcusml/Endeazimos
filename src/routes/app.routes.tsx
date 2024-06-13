@@ -7,12 +7,14 @@ import { InstituicaoProps } from '@components/HomeSection/Item';
 import { CampanhaDetails } from '@screens/CampanhaDetails';
 import { Instituicao } from '@screens/Instituicao';
 import { Voluntariado } from '@screens/Voluntariado';
+import { Contribuir } from '@screens/Contribuir';
 
 export type StackRoutesParams = {
   main: undefined;
   instituicao: { data: InstituicaoProps }
   voluntariado: { data: InstituicaoProps },
   campanhaDetails: { data: CampanhaProps };
+  contribuir: { data: CampanhaProps }
 }
 
 const Stack = createNativeStackNavigator<StackRoutesParams>();
@@ -47,6 +49,10 @@ export function StackRoutes() {
       <Stack.Screen
         name='campanhaDetails'
         component={CampanhaDetails}
+      />
+      <Stack.Screen
+        name='contribuir'
+        component={Contribuir}
       />
     </Stack.Navigator>
   )

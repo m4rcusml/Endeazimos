@@ -6,23 +6,21 @@ import { useAuth } from '@contexts/auth';
 import Logo from '@assets/logo.svg';
 import { UserCard } from '@components/UserCard';
 import { GenericButton } from '@components/GenericButton';
-import { MaterialIcons, AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Typography } from '@components/Typography';
 import { CaretRight, HandHeart, Lock, UserPlus } from 'phosphor-react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const RedirectButton = ({ title, icon, onPress }: { title: string, icon(): void, onPress(): void }) => (
+const RedirectButton = ({ title, icon, onPress }: { title: string, icon(props?: any): void, onPress(): void }) => (
   <TouchableOpacity
     onPress={onPress}
-    activeOpacity={0.6}
+    activeOpacity={0.4}
     style={styles.buttonBox}
     children={(
       <>
-        {icon && icon()}
-        <Typography size={18}>{title}</Typography>
-        <CaretRight
-          color='white'
-          size={20}
-        />
+        {icon && icon({ size: 28 })}
+        <Typography size={18} color='black' style={{ flex: 1 }}>{title}</Typography>
+        <CaretRight size={20} />
       </>
     )}
   />
@@ -31,6 +29,7 @@ const RedirectButton = ({ title, icon, onPress }: { title: string, icon(): void,
 export function Profile() {
   const { top } = useSafeAreaInsets();
   const { user, logOut } = useAuth();
+  const { navigate } = useNavigation<any>();
 
   return (
     <LinearGradient
@@ -38,48 +37,52 @@ export function Profile() {
       style={[styles.background, { paddingTop: top }]}
     >
       <Logo
-        width={240}
-        height={240}
+        width={200}
+        height={200}
         style={{
           position: 'absolute',
           left: '50%',
-          top: '50%',
+          bottom: '52%',
           opacity: 0.5,
           transform: [
-            { translateX: -120 },
-            { translateY: -120 }
+            { translateX: -100 },
+            { translateY: -100 }
           ]
         }}
       />
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <UserCard data={user} />
+      <View style={{ margin: 'auto' }}>
+        <UserCard data={user} onPress={() => navigate('editProfile')} />
+      </View>
 
-        <View style={styles.buttonsContainer}>
-          <RedirectButton
-            onPress={() => {}}
-            icon={() => <UserPlus color='white' />}
-            title='Expansão de cadastro'
-          />
-          <RedirectButton
-            onPress={() => {}}
-            icon={() => <Lock color='white' />}
-            title='Alterar senha'
-          />
-          <RedirectButton
-            onPress={() => {}}
-            icon={() => <HandHeart color='white' />}
-            title='Doações'
-          />
-        </View>
+      <View style={styles.contentCard}>
+        <ScrollView contentContainerStyle={{ paddingVertical: 30, gap: 30 }}>
+          <View style={styles.buttonsContainer}>
+            <RedirectButton
+              onPress={() => navigate('cadastroExpandido')}
+              icon={(props) => <UserPlus {...props} />}
+              title='Expansão de cadastro'
+            />
+            <RedirectButton
+              onPress={() => navigate('alterarSenha')}
+              icon={(props) => <Lock {...props} />}
+              title='Alterar senha'
+            />
+            <RedirectButton
+              onPress={() => { }}
+              icon={(props) => <HandHeart {...props} />}
+              title='Doações'
+            />
+          </View>
+        </ScrollView>
 
         <GenericButton
           icon={() => <MaterialIcons name='logout' size={24} color='black' />}
-          style={styles.logOut}
+          style={{ alignSelf: 'flex-end', margin: 16 }}
           onPress={logOut}
           title='Sair'
           filled
         />
-      </ScrollView>
+      </View>
     </LinearGradient>
   )
 }
@@ -87,34 +90,27 @@ export function Profile() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+    justifyContent: 'space-between'
   },
-  scroll: {
-    paddingHorizontal: 16,
-    paddingVertical: 30,
-    gap: 60,
-    justifyContent: 'space-between',
+  contentCard: {
+    backgroundColor: '#dfdfdf',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    flexBasis: '55%',
+    minHeight: '25%',
+    flexShrink: 1,
   },
   buttonsContainer: {
     marginHorizontal: 20,
     gap: 15
   },
-  logOut: {
-    alignSelf: 'flex-start'
-  },
   buttonBox: {
-    backgroundColor: '#fff6',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 5,
+    paddingVertical: 15,
     borderRadius: 40,
+    gap: 20,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  caretStyle: {
-    backgroundColor: '#fff5',
-    borderRadius: 30,
-    paddingVertical: 5,
-    paddingLeft: 6,
-    paddingRight: 4
   }
 });

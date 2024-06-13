@@ -4,7 +4,7 @@ import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navig
 import { LinearGradient } from 'expo-linear-gradient';
 import { StackRoutesParams } from '@routes/app.routes';
 
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Typography } from '@components/Typography';
 import { GenericButton } from '@components/GenericButton';
 import { FontAwesome, FontAwesome6 } from '@expo/vector-icons';
@@ -46,6 +46,7 @@ export function Instituicao() {
 
         <View style={styles.mapContainer}>
           <MapView
+          provider={PROVIDER_GOOGLE}
             style={styles.map}
             initialRegion={{
               latitude: data.location.latitude,
