@@ -1,20 +1,22 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
   MaterialCommunityIcons,
   FontAwesome6,
-  Foundation,
-  Octicons,
-  MaterialIcons
 } from '@expo/vector-icons';
+
+import { Bell, House, User } from 'phosphor-react-native';
 
 import { Home } from '@screens/Home';
 import { Profile } from '@screens/Profile';
 import { Campanhas } from '@screens/Campanhas';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CadastroExpandido } from '@screens/Profile/CadastroExpandido';
 import { AlterarSenha } from '@screens/Profile/AlterarSenha';
 import { EditProfile } from '@screens/Profile/EditProfile';
+import { Contribuintes } from '@screens/Profile/Contribuintes';
+import { Instituicao } from '@screens/Profile/Instituicao';
+import { Forum } from '@screens/Forum';
 
 const Tab = createBottomTabNavigator();
 
@@ -37,6 +39,14 @@ function CadastroExpandidoRoutes() {
       <Stack.Screen
         name='start'
         component={CadastroExpandido}
+      />
+      <Stack.Screen
+        name='instituicao'
+        component={Instituicao}
+      />
+      <Stack.Screen
+        name='contribuintes'
+        component={Contribuintes}
       />
     </Stack.Navigator>
   )
@@ -91,9 +101,7 @@ export function TabRoutes() {
         component={Home}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            focused
-              ? <Foundation name='home' size={size + 1} color={color} />
-              : <Octicons name='home' size={size - 1} color={color} />
+            <House weight='fill' size={size + 1} color={color} />
           )
         }}
       />
@@ -106,21 +114,21 @@ export function TabRoutes() {
           ),
         }}
       />
-      {/* <Tab.Screen
-        name='notifications'
-        component={Home}
+      <Tab.Screen
+        name='forum'
+        component={Forum}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <MaterialIcons name={focused ? 'notifications' : 'notifications-none'} size={size + 2} color={color} />
+            <Bell size={size} color={color} weight='fill' />
           )
         }}
-      /> */}
+      />
       <Tab.Screen
         name='profile'
         component={ProfileRoutes}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <FontAwesome6 name={focused ? 'user-large' : 'user'} size={focused ? size - 6 : size - 4} color={color} />
+            <User size={size} color={color} weight='fill' />
           )
         }}
       />

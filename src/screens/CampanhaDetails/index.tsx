@@ -1,6 +1,6 @@
 import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StackRoutesParams } from '@routes/app.routes';
 
@@ -35,18 +35,18 @@ export function CampanhaDetails() {
           {data.name}
         </Typography>
 
-        <Typography alignment='justify'>
-          {data.description}
-        </Typography>
-
         <View style={styles.requiredValue}>
-          <Typography weight={600} size={18}>Valor necessário: </Typography>
-          <Typography alignment='justify' size={18}>
-            R$ {data.requiredValue.toFixed(2).replace('.', ',')}
+          <Typography>
+            R$ {data.collected.toFixed(2).replace('.', ',')} arrecadados no momento
+          </Typography>
+
+          <ProgressBar total={data.requiredValue} value={data.collected} />
+
+          <Typography>
+            Meta: R$ {data.requiredValue.toFixed(2).replace('.', ',')}
           </Typography>
         </View>
 
-        <ProgressBar progress={data.totalRaised} />
 
         <TouchableOpacity
           activeOpacity={0.4}
@@ -58,6 +58,10 @@ export function CampanhaDetails() {
             </Typography>
           )}
         />
+
+        <Typography alignment='justify'>
+          {data.description}
+        </Typography>
       </ScrollView>
     </LinearGradient>
   )
@@ -74,8 +78,12 @@ const styles = StyleSheet.create({
     gap: 30,
   },
   requiredValue: {
-    flexDirection: 'row',
-    justifyContent: 'center'
+    gap: 10,
+    borderRadius: 20,
+    borderColor: 'black',
+    borderWidth: 1,
+    padding: 20,
+    marginHorizontal: -16
   },
   doarButton: {
     alignSelf: 'center',

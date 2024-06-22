@@ -21,7 +21,7 @@ export function UserCard({ data, onPress }: Props) {
           height={96}
           borderRadius={96}
         />
-        <View
+        {onPress && <View
           children={(
             <FontAwesome5
               style={{ alignSelf: 'flex-start', position: 'absolute', bottom: 0, right: 0 }}
@@ -30,7 +30,7 @@ export function UserCard({ data, onPress }: Props) {
               size={18}
             />
           )}
-        />
+        />}
       </TouchableOpacity>
 
       <Typography weight={600} size={18}>

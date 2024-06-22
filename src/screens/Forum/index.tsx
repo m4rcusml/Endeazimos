@@ -1,0 +1,52 @@
+import { HomeSection } from '@components/HomeSection';
+import { InstituicaoProps } from '@components/HomeSection/Item';
+import { SearchBar } from '@components/SearchBar';
+import { Typography } from '@components/Typography';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ScrollView, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const fakeData: InstituicaoProps[] = [
+  {
+    location: { latitude: -3.1006785, longitude: -60.0022989 },
+    name: 'Anjos de Rua - Manaus',
+    telephone: '(92) 99136-3600',
+    openingHours: 'Aberto de Seg à Sáb. (07:00 ás 15:00)',
+    namedAddress: 'Tv. Ouroeste, 2 - Aleixo, Manaus - AM, 69060-330',
+    description: 'El universo de Splatoon es un mundo colorido y vibrante habitado por criaturas conocidas como Inklings y Octolings. La historia se desarrolla en la ciudad de Inkopolis, donde los Inklings compiten en batallas de pintura llamadas "Turf Wars". El juego también presenta una narrativa más profunda que incluye la batalla entre los Inklings y los Octarianos, una raza de pulpos enemigos, así como la misteriosa desaparición de los Calamares.',
+    image: 'data:image/png;base64,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'
+  },
+]
+
+export function Forum() {
+  const { top } = useSafeAreaInsets();
+
+  return (
+    <LinearGradient
+      colors={['#125266', '#104C5F']}
+      style={[styles.background, { paddingTop: top }]}
+    >
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <SearchBar />
+
+        <HomeSection
+          title='Mais pesquisadas'
+          data={fakeData}
+        />
+
+        <Typography>Ainda to fazendo essa tela de posts</Typography>
+      </ScrollView>
+    </LinearGradient>
+  )
+}
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+  scroll: {
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    gap: 30
+  }
+});

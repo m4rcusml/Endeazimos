@@ -7,9 +7,11 @@ import Logo from '@assets/logo.svg';
 import { UserCard } from '@components/UserCard';
 import { Typography } from '@components/Typography';
 import { Buildings, CaretRight, HandHeart } from 'phosphor-react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 export function CadastroExpandido() {
   const { top } = useSafeAreaInsets();
+  const { navigate } = useNavigation<NavigationProp<any>>();
   const { user } = useAuth();
 
   return (
@@ -36,7 +38,7 @@ export function CadastroExpandido() {
       </View>
 
       <View style={styles.contentCard}>
-        <TouchableOpacity style={styles.buttonBox} activeOpacity={0.6}>
+        <TouchableOpacity style={styles.buttonBox} activeOpacity={0.6} onPress={() => navigate('instituicao')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
             <Buildings />
             <Typography color='black'>Instituição</Typography>
@@ -44,7 +46,7 @@ export function CadastroExpandido() {
           <CaretRight />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonBox} activeOpacity={0.6}>
+        <TouchableOpacity style={styles.buttonBox} activeOpacity={0.6} onPress={() => navigate('contribuintes')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
             <HandHeart />
             <Typography color='black'>Contribuintes</Typography>

@@ -21,9 +21,21 @@ interface AuthContextDataType {
     email: string;
     phoneNumber: string;
   }): void;
+  updatePassword({ password, newPassword }: {
+    password: string;
+    newPassword: string;
+  }): boolean;
 }
 
-const Users: UserType[] = [];
+let Users: UserType[] = [
+  {
+    email: 'fmarcus549@gmail.com',
+    password: 'senha123',
+    name: 'm4rcusml',
+    phoneNumber: '(92) 99902 9920',
+    picture: 'https://github.com/m4rcusml.png'
+  }
+];
 
 const AuthContext = createContext<AuthContextDataType>({} as AuthContextDataType);
 
@@ -68,12 +80,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const newData: UserType = {
         ...currentUser,
         name: name || currentUser.name,
-        email: email ||currentUser.email,
+        email: email || currentUser.email,
         phoneNumber: phoneNumber || currentUser.phoneNumber,
       }
 
       setUser(newData);
     }
+  }
+
+  function updatePassword({ password, newPassword }: { password: string, newPassword: string }) {
+    const currentUser = Users.find(_user => _user.email === user?.email);
+
+    if (currentUser && user) {
+      if (currentUser.password === password) {
+        const newData: UserType = {
+          ...currentUser,
+          password: newPassword || currentUser.password,
+        }
+
+        setUser(newData);
+
+        Users = Users.filter(oldUser => oldUser.email !== user?.email);
+        Users.push(user);
+        
+        return true;
+      }
+    }
+
+    return false;
   }
 
   return (
@@ -84,7 +118,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logIn,
         logOut,
         signUp,
-        editProfile
+        editProfile,
+        updatePassword
       }}
     >
       {children}

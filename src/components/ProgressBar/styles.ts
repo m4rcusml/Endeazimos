@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 export const Container = styled.View`
   background-color: #B4A9A9;
   border-radius: 15px;
-  height: 30px;
+  height: 28px;
   overflow: hidden;
 `;
 
@@ -14,5 +14,5 @@ export const Progress = styled.View<{ progress: number }>`
   bottom: 0;
   top: 0;
   left: 0;
-  right: ${({ progress }) => progress}%;
+  width: ${({ progress }) => progress}%;
 `;

@@ -13,9 +13,10 @@ export function EditProfile() {
   const { top } = useSafeAreaInsets();
   const { user, editProfile } = useAuth();
   const { goBack } = useNavigation();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  
+  const [name, setName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [phone, setPhone] = useState(user?.phoneNumber || '');
 
   return (
     <LinearGradient
@@ -37,7 +38,7 @@ export function EditProfile() {
         }}
       />
       <View style={{ justifyContent: 'center' }}>
-        <UserCard data={user} onPress={() => console.log('Editar imagem')} />
+        <UserCard data={user} />
       </View>
 
       <View style={styles.contentCard}>

@@ -1,13 +1,14 @@
 import { Container, Progress } from './styles';
 
 type Props = {
-  progress?: number;
+  total: number;
+  value: number;
 }
 
-export function ProgressBar({ progress = 0 }: Props) {
+export function ProgressBar({ total, value }: Props) {
   return (
     <Container>
-      <Progress progress={progress} />
+      <Progress progress={Number(((value / total) * 100))} />
     </Container>
   )
 }

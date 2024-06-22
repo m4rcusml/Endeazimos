@@ -10,7 +10,7 @@ export type CampanhaProps = {
   name: string;
   description: string;
   requiredValue: number;
-  totalRaised: number;
+  collected: number;
   image: string;
 }
 
@@ -41,10 +41,10 @@ export function CampanhaButton({ data }: Props) {
         </Typography>
 
         <Typography color='#0008' size={14}>
-          Total arrecadado: {data.totalRaised}%
+          Total arrecadado: {((data.collected / data.requiredValue) * 100).toFixed(0)}%
         </Typography>
 
-        <ProgressBar progress={data.totalRaised} />
+        <ProgressBar total={data.requiredValue} value={data.collected} />
       </InfoContainer>
 
       <AntDesign

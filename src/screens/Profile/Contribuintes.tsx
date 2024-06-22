@@ -9,22 +9,13 @@ import { Typography } from '@components/Typography';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 
-export function AlterarSenha() {
+export function Contribuintes() {
   const { top } = useSafeAreaInsets();
-  const { user, updatePassword } = useAuth();
+  const { user } = useAuth();
   const { goBack } = useNavigation();
 
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-
-  function handleUpdate() {
-    const response = updatePassword({ password, newPassword })
-    if(response) {
-      goBack();
-    } else {
-      Alert.alert('Erro', 'A senha que você informou está errada.')
-    }
-  }
   
   return (
     <LinearGradient
@@ -50,14 +41,14 @@ export function AlterarSenha() {
       </View>
 
       <View style={styles.contentCard}>
-        <TextInput placeholder='Senha' style={styles.input} placeholderTextColor='#ccc' value={password} onChangeText={setPassword} />
-        <TextInput placeholder='Confirmar senha' style={styles.input} placeholderTextColor='#ccc' value={newPassword} onChangeText={setNewPassword} />
+        <TextInput placeholder='CPF (123.456.789-01)' style={styles.input} placeholderTextColor='#ccc' />
+        <TextInput placeholder='C' style={styles.input} placeholderTextColor='#ccc' />
       </View>
 
       <TouchableOpacity
           activeOpacity={0.4}
           style={styles.save}
-          onPress={handleUpdate}
+          onPress={goBack}
           children={(
             <Typography weight={600}>
               Salvar

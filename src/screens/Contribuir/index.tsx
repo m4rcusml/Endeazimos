@@ -28,12 +28,12 @@ export function Contribuir() {
         Contribuir
       </Typography>
 
-      <Typography alignment='center' size={18} weight={600}>
+      <Typography alignment='center' size={20} weight={600}>
         Saiba que, ao doar, você muda a vida de uma pessoa necessitada
         e torna o mundo, aos poucos, um lugar melhor.
       </Typography>
 
-      <TextInput style={styles.input} placeholder='Valor (R$ 10,00)' />
+      <TextInput style={styles.input} placeholder='Valor (R$ 10,00)' keyboardType='numeric' />
 
       <View style={styles.requiredValue}>
         <GenericButton
