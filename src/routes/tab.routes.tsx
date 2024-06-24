@@ -14,7 +14,7 @@ import { Campanhas } from '@screens/Campanhas';
 import { CadastroExpandido } from '@screens/Profile/CadastroExpandido';
 import { AlterarSenha } from '@screens/Profile/AlterarSenha';
 import { EditProfile } from '@screens/Profile/EditProfile';
-import { Contribuintes } from '@screens/Profile/Contribuintes';
+import { Contribuinte } from '@screens/Profile/Contribuinte';
 import { Instituicao } from '@screens/Profile/Instituicao';
 import { Forum } from '@screens/Forum';
 
@@ -45,8 +45,8 @@ function CadastroExpandidoRoutes() {
         component={Instituicao}
       />
       <Stack.Screen
-        name='contribuintes'
-        component={Contribuintes}
+        name='contribuinte'
+        component={Contribuinte}
       />
     </Stack.Navigator>
   )

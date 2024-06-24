@@ -9,7 +9,7 @@ import { Typography } from '@components/Typography';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 
-export function Contribuintes() {
+export function Contribuinte() {
   const { top } = useSafeAreaInsets();
   const { user } = useAuth();
   const { goBack } = useNavigation();
@@ -42,7 +42,6 @@ export function Contribuintes() {
 
       <View style={styles.contentCard}>
         <TextInput placeholder='CPF (123.456.789-01)' style={styles.input} placeholderTextColor='#ccc' />
-        <TextInput placeholder='C' style={styles.input} placeholderTextColor='#ccc' />
       </View>
 
       <TouchableOpacity

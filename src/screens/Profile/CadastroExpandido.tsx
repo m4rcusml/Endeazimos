@@ -46,7 +46,7 @@ export function CadastroExpandido() {
           <CaretRight />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonBox} activeOpacity={0.6} onPress={() => navigate('contribuintes')}>
+        <TouchableOpacity style={styles.buttonBox} activeOpacity={0.6} onPress={() => navigate('contribuinte')}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 20 }}>
             <HandHeart />
             <Typography color='black'>Contribuintes</Typography>

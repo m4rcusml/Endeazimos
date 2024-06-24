@@ -18,22 +18,32 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.m4rcusml.Endeazimos",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDkOKcssFsmIeMsHFN3UdPx3FDRXmOrqLg"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#125266"
-      },
-      "package": "com.m4rcusml.Endeazimos",
-       "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyBq-AFO17rWZEItZu25nhRloNm2gd1bUE4"
-        }
-       }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-image-picker",
+        {
+        "photosPermission": "O aplicativo acessa suas fotos para deixar você compartilhá-las com outras pessoas."
+        }
+      ]
     ],
     "extra": {
       "eas": {
