@@ -10,7 +10,7 @@ import { Typography } from '@components/Typography';
 
 export function Campanhas() {
   const { top } = useSafeAreaInsets();
-  const [campanhas, setCampanhas] = useState<CampanhaProps[]>([]);
+  const [campanhas, setCampanhas] = useState<{id: string}[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   function fetchCampanhas() {
@@ -18,7 +18,6 @@ export function Campanhas() {
     firestore().collection('campanha').get()
       .then(response => {
         setCampanhas(response.docs.map(doc => ({
-          ...doc.data() as CampanhaProps,
           id: doc.id
         })));
         setIsLoading(false);
@@ -38,7 +37,7 @@ export function Campanhas() {
         data={campanhas}
         refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchCampanhas} />}
         ListHeaderComponent={() => <Typography size={28} weight={600} alignment='center' children={'Campanhas'} />}
-        renderItem={({ item }) => <CampanhaButton data={item} />}
+        renderItem={({ item }) => <CampanhaButton id={item.id} />}
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={styles.scroll}
         ListEmptyComponent={() => (

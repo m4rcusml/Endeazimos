@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 
 export function Forum() {
   const { top } = useSafeAreaInsets();
-  const [campanhas, setCampanhas] = useState<PostProps[]>([]);
+  const [campanhas, setCampanhas] = useState<{id: string}[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   function fetchPosts() {
@@ -19,7 +19,6 @@ export function Forum() {
     firestore().collection('posts').get()
       .then(response => {
         setCampanhas(response.docs.map(doc => ({
-          ...doc.data() as PostProps,
           id: doc.id
         })));
         setIsLoading(false);
@@ -39,7 +38,7 @@ export function Forum() {
         data={campanhas}
         refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchPosts} />}
         ListHeaderComponent={() => <SearchBar />}
-        renderItem={({ item }) => <Post data={item} />}
+        renderItem={({ item }) => <Post id={item.id} />}
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={styles.scroll}
         ListEmptyComponent={() => (
