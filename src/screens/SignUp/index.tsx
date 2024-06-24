@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,8 +7,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { AuthRoutesParams } from '@routes/auth.routes';
-import { useAuth } from '@contexts/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 import { GenericButton } from '@components/GenericButton';
 import { Typography } from '@components/Typography';
@@ -23,7 +25,7 @@ const SignUpDataSchema = z.object({
   phoneNumber: z.string({ required_error: 'Preencha este campo' })
     .min(1, 'Preencha este campo'),
   password: z.string({ required_error: 'Preencha este campo' })
-    .min(1, 'Preencha este campo'),
+    .min(6, 'A senha deve ter no mínimo 6 caracteres'),
   passwordConfirm: z.string({ required_error: 'Preencha este campo' })
     .min(1, 'Preencha este campo'),
 })
@@ -34,20 +36,80 @@ const SignUpDataSchema = z.object({
 
 type SignUpDataType = z.infer<typeof SignUpDataSchema>;
 
+GoogleSignin.configure({
+  scopes: ['email', 'profile'],
+  webClientId:
+    '530691370256-72lnq8b3b5d84c8htkce2ovkqkkkfmnf.apps.googleusercontent.com',
+});
+
 export function SignUp() {
-  const { navigate, goBack } = useNavigation<NavigationProp<AuthRoutesParams, 'signup'>>();
+  const [isLoading, setIsLoading] = useState(false);
   const { handleSubmit, control, formState: { errors } } = useForm<SignUpDataType>({
     resolver: zodResolver(SignUpDataSchema)
   });
   const { bottom } = useSafeAreaInsets();
-  const { signUp } = useAuth();
 
+  function loginWithGoogle() {
+    setIsLoading(true);
+
+    GoogleSignin.hasPlayServices();
+    GoogleSignin.signIn()
+      .then(googleCredentials => {
+        auth()
+          .signInWithCredential(
+            auth.GoogleAuthProvider.credential(googleCredentials.idToken)
+          )
+          .then(async () => {
+            const alreadyRegistered = await (async function verify() {
+              const user = await firestore()
+                .collection('users')
+                .where('uid', '==', auth().currentUser?.uid)
+                .get();
+
+              return user.empty;
+            })();
+
+            if (!alreadyRegistered) return;
+
+            firestore()
+              .collection('users')
+              .add({
+                uid: auth().currentUser?.uid,
+                name: googleCredentials.user.name,
+                photo: googleCredentials.user.photo
+              })
+              .then(() => {
+                console.log('User added!');
+              });
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  }
+  
   async function handleCreateAccount(data: SignUpDataType) {
-    console.log('cria conta');
-    const response = await signUp(data);
-
-    if(response) {
-      goBack();
+    try {
+      setIsLoading(true);
+      auth()
+        .createUserWithEmailAndPassword(data.email, data.password)
+        .then(() => {
+          firestore()
+            .collection('users')
+            .add({
+              name: data.name,
+              phoneNumber: data.phoneNumber,
+              uid: auth().currentUser?.uid,
+            })
+            .then(() => {
+              console.log('User added!');
+            });
+        });
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
     }
   }
 
@@ -95,6 +157,7 @@ export function SignUp() {
             placeholder='Telefone'
             control={control}
             name='phoneNumber'
+            keyboardType='numeric'
           />
           <Typography
             children={errors.phoneNumber?.message}
@@ -139,6 +202,7 @@ export function SignUp() {
         title='Confirmar'
         style={styles.confirmButton}
         onPress={handleSubmit(handleCreateAccount)}
+        disabled={isLoading}
       />
     </LinearGradient>
   )

@@ -1,14 +1,18 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { LinearGradient } from 'expo-linear-gradient';
-import { useForm } from 'react-hook-form';
+
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { AuthRoutesParams } from '@routes/auth.routes';
-import { useAuth } from '@contexts/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 import { GenericButton } from '@components/GenericButton';
 import { Typography } from '@components/Typography';
@@ -27,20 +31,73 @@ const SignInDataSchema = z.object({
 
 type SignInDataType = z.infer<typeof SignInDataSchema>;
 
+GoogleSignin.configure({
+  scopes: ['email', 'profile'],
+  webClientId: '530691370256-72lnq8b3b5d84c8htkce2ovkqkkkfmnf.apps.googleusercontent.com'
+});
+
 export function SignIn() {
   const { navigate } = useNavigation<NavigationProp<AuthRoutesParams, 'signin'>>();
   const { handleSubmit, control, formState: { errors } } = useForm<SignInDataType>({
     resolver: zodResolver(SignInDataSchema)
   });
   const { top, bottom } = useSafeAreaInsets();
-  const { logIn } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleCreateAccount() {
     navigate('signup');
   }
 
-  async function handleLogin(data: SignInDataType) {
-    logIn(data);
+  function loginWithGoogle() {
+    setIsLoading(true);
+
+    GoogleSignin.hasPlayServices();
+    GoogleSignin.signIn()
+      .then(googleCredentials => {
+        auth()
+          .signInWithCredential(
+            auth.GoogleAuthProvider.credential(googleCredentials.idToken)
+          )
+          .then(async () => {
+            const alreadyRegistered = await (async function verify() {
+              const user = await firestore()
+                .collection('users')
+                .where('uid', '==', auth().currentUser?.uid)
+                .get();
+
+              return user.empty;
+            })();
+
+            if (!alreadyRegistered) return;
+
+            firestore()
+              .collection('users')
+              .add({
+                uid: auth().currentUser?.uid,
+                name: googleCredentials.user.name,
+                photo: googleCredentials.user.photo
+              })
+              .then(() => {
+                console.log('User added!');
+              });
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  }
+
+  async function handleLogin({ email, password }: SignInDataType) {
+    try {
+      setIsLoading(true);
+      await auth().signInWithEmailAndPassword(email, password);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Ocorreu um erro', 'Tente novamente mais tarde.')
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -102,6 +159,7 @@ export function SignIn() {
           filled
           title='Entrar'
           onPress={handleSubmit(handleLogin)}
+          disabled={isLoading}
         />
       </View>
 
@@ -116,7 +174,8 @@ export function SignIn() {
           filled
           icon={() => <GoogleLogo height={34} width={34} />}
           style={{ alignSelf: 'center', height: 52, width: 52 }}
-          onPress={() => { }}
+          onPress={loginWithGoogle}
+          disabled={isLoading}
         />
       </View>
     </LinearGradient>

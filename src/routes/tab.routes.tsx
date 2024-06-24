@@ -1,12 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-  MaterialCommunityIcons,
-  FontAwesome6,
-} from '@expo/vector-icons';
-
-import { Bell, House, User } from 'phosphor-react-native';
+import { Bell, House, SquaresFour, User } from 'phosphor-react-native';
 
 import { Home } from '@screens/Home';
 import { Profile } from '@screens/Profile';
@@ -110,7 +105,7 @@ export function TabRoutes() {
         component={Campanhas}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <MaterialCommunityIcons name={focused ? 'widgets' : 'widgets-outline'} size={size} color={color} />
+            <SquaresFour weight='fill' size={size} color={color} />
           ),
         }}
       />

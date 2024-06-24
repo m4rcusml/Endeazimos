@@ -1,15 +1,16 @@
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+
 import { useAuth } from '@contexts/auth';
 
-import Logo from '@assets/logo.svg';
-import { UserCard } from '@components/UserCard';
+import { CaretRight, HandHeart, Lock, UserPlus, SignOut } from 'phosphor-react-native';
 import { GenericButton } from '@components/GenericButton';
-import { MaterialIcons } from '@expo/vector-icons';
 import { Typography } from '@components/Typography';
-import { CaretRight, HandHeart, Lock, UserPlus } from 'phosphor-react-native';
-import { useNavigation } from '@react-navigation/native';
+import { UserCard } from '@components/UserCard';
+
+import Logo from '@assets/logo.svg';
 
 const RedirectButton = ({ title, icon, onPress }: { title: string, icon(props?: any): void, onPress(): void }) => (
   <TouchableOpacity
@@ -28,8 +29,8 @@ const RedirectButton = ({ title, icon, onPress }: { title: string, icon(props?: 
 
 export function Profile() {
   const { top } = useSafeAreaInsets();
-  const { user, logOut } = useAuth();
   const { navigate } = useNavigation<any>();
+  const { user, logOut } = useAuth();
 
   return (
     <LinearGradient
@@ -76,7 +77,7 @@ export function Profile() {
         </ScrollView>
 
         <GenericButton
-          icon={() => <MaterialIcons name='logout' size={24} color='black' />}
+          icon={() => <SignOut size={24} color='black' />}
           style={{ alignSelf: 'flex-end', margin: 16 }}
           onPress={logOut}
           title='Sair'

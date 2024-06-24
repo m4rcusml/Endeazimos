@@ -1,25 +1,72 @@
+import { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { LinearGradient } from 'expo-linear-gradient';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { AuthRoutesParams } from '@routes/auth.routes';
-import { useAuth } from '@contexts/auth';
 
 import { GenericButton } from '@components/GenericButton';
 import { Typography } from '@components/Typography';
-import { Textfield } from '@components/Textfield';
 
 import Logo from '@assets/logo.svg';
 import GoogleLogo from '@assets/google-logo.svg';
 
+GoogleSignin.configure({
+  scopes: ['email', 'profile'],
+  webClientId:
+    '530691370256-72lnq8b3b5d84c8htkce2ovkqkkkfmnf.apps.googleusercontent.com',
+});
+
 export function NotLogged() {
+  const [isLoading, setIsLoading] = useState(false);
   const { navigate } = useNavigation<NavigationProp<AuthRoutesParams, 'signin'>>();
   const { top, bottom } = useSafeAreaInsets();
+
+  function loginWithGoogle() {
+    setIsLoading(true);
+
+    GoogleSignin.hasPlayServices();
+    GoogleSignin.signIn()
+      .then(googleCredentials => {
+        auth()
+          .signInWithCredential(
+            auth.GoogleAuthProvider.credential(googleCredentials.idToken)
+          )
+          .then(async () => {
+            const alreadyRegistered = await (async function verify() {
+              const user = await firestore()
+                .collection('users')
+                .where('uid', '==', auth().currentUser?.uid)
+                .get();
+
+              return user.empty;
+            })();
+
+            if (!alreadyRegistered) return;
+
+            firestore()
+              .collection('users')
+              .add({
+                uid: auth().currentUser?.uid,
+                name: googleCredentials.user.name,
+                photo: googleCredentials.user.photo
+              })
+              .then(() => {
+                console.log('User added!');
+              });
+          })
+          .catch((error) => console.log(error));
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  }
 
   return (
     <LinearGradient
@@ -38,7 +85,7 @@ export function NotLogged() {
       </View>
 
       <Typography alignment='center' size={18} style={{ width: '80%', alignSelf: 'center' }}>
-        Você pode prosseguir criando uma conta do zero ou a partir de seu email. 
+        Você pode prosseguir criando uma conta do zero ou a partir de seu email.
       </Typography>
 
       <View style={styles.secondaryContainer}>
@@ -59,7 +106,8 @@ export function NotLogged() {
           icon={() => <GoogleLogo height={34} width={34} />}
           style={{ height: 52 }}
           title='Continuar com o Google'
-          onPress={() => {}}
+          onPress={loginWithGoogle}
+          disabled={isLoading}
         />
       </View>
 

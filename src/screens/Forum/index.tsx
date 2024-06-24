@@ -1,15 +1,34 @@
-import { Post } from '@components/Post';
-import { SearchBar } from '@components/SearchBar';
-import { LinearGradient } from 'expo-linear-gradient';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const fakeData: [] = [
+import firestore from '@react-native-firebase/firestore';
 
-]
+import { Post, PostProps } from '@components/Post';
+import { SearchBar } from '@components/SearchBar';
+import { Typography } from '@components/Typography';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useState } from 'react';
 
 export function Forum() {
   const { top } = useSafeAreaInsets();
+  const [campanhas, setCampanhas] = useState<PostProps[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  function fetchPosts() {
+    setIsLoading(true);
+    firestore().collection('posts').get()
+      .then(response => {
+        setCampanhas(response.docs.map(doc => ({
+          ...doc.data() as PostProps,
+          id: doc.id
+        })));
+        setIsLoading(false);
+      });
+  }
+  
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   return (
     <LinearGradient
@@ -17,11 +36,16 @@ export function Forum() {
       style={[styles.background, { paddingTop: top }]}
     >
       <FlatList
-        data={fakeData}
+        data={campanhas}
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchPosts} />}
         ListHeaderComponent={() => <SearchBar />}
+        renderItem={({ item }) => <Post data={item} />}
+        keyExtractor={(item) => String(item.id)}
         contentContainerStyle={styles.scroll}
-        renderItem={() => <Post />}
-        />
+        ListEmptyComponent={() => (
+          !isLoading && <Typography style={{ paddingVertical: 20 }}>Nada encontrado</Typography>
+        )}
+      />
     </LinearGradient>
   )
 }

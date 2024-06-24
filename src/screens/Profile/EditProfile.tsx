@@ -1,22 +1,41 @@
+import { useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '@contexts/auth';
 
-import Logo from '@assets/logo.svg';
+import * as ImagePicker from 'expo-image-picker';
+
 import { UserCard } from '@components/UserCard';
 import { Typography } from '@components/Typography';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+
+import Logo from '@assets/logo.svg';
 
 export function EditProfile() {
   const { top } = useSafeAreaInsets();
   const { user, editProfile } = useAuth();
   const { goBack } = useNavigation();
-  
+
   const [name, setName] = useState(user?.name || '');
-  const [email, setEmail] = useState(user?.email || '');
   const [phone, setPhone] = useState(user?.phoneNumber || '');
+  const [image, setImage] = useState(user?.photo || '');
+
+  async function editImage() {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      base64: true,
+      quality: 1,
+      aspect: [1, 1],
+    });
+
+    if (!result.canceled) {
+      const newBase64Image = 'data:image/jpeg;base64,' + result.assets[0].base64;
+
+      setImage(newBase64Image);
+    }
+  }
 
   return (
     <LinearGradient
@@ -38,28 +57,27 @@ export function EditProfile() {
         }}
       />
       <View style={{ justifyContent: 'center' }}>
-        <UserCard data={user} />
+        <UserCard data={user} imageUrl={image} onPress={editImage} />
       </View>
 
       <View style={styles.contentCard}>
         <TextInput placeholder='Nome' style={styles.input} placeholderTextColor='#ccc' value={name} onChangeText={setName} />
-        <TextInput placeholder='Email' style={styles.input} placeholderTextColor='#ccc' value={email} onChangeText={setEmail} />
-        <TextInput placeholder='Telefone' style={styles.input} placeholderTextColor='#ccc' value={phone} onChangeText={setPhone} />
+        <TextInput placeholder='Telefone' style={styles.input} placeholderTextColor='#ccc' value={phone} onChangeText={setPhone} keyboardType='numeric' />
       </View>
 
       <TouchableOpacity
-          activeOpacity={0.4}
-          style={styles.save}
-          onPress={() => {
-            editProfile({ email, name, phoneNumber: phone });
-            goBack();
-          }}
-          children={(
-            <Typography weight={600}>
-              Salvar
-            </Typography>
-          )}
-        />
+        activeOpacity={0.4}
+        style={styles.save}
+        onPress={() => {
+          editProfile({ name: name.trim(), phoneNumber: phone.trim() });
+          goBack();
+        }}
+        children={(
+          <Typography weight={600}>
+            Salvar
+          </Typography>
+        )}
+      />
     </LinearGradient>
   )
 }

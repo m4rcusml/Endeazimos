@@ -1,12 +1,14 @@
 import { Image } from 'react-native';
-import { Container, InfoContainer } from './styles';
-import { Typography } from '@components/Typography';
-import { AntDesign } from '@expo/vector-icons';
-import { ProgressBar } from '@components/ProgressBar';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { StackRoutesParams } from '@routes/app.routes';
 
+import { Container, InfoContainer } from './styles';
+import { Typography } from '@components/Typography';
+import { ProgressBar } from '@components/ProgressBar';
+import { CaretRight } from 'phosphor-react-native';
+
 export type CampanhaProps = {
+  id: string;
   name: string;
   description: string;
   requiredValue: number;
@@ -47,16 +49,13 @@ export function CampanhaButton({ data }: Props) {
         <ProgressBar total={data.requiredValue} value={data.collected} />
       </InfoContainer>
 
-      <AntDesign
-        name='right'
+      <CaretRight
         color='white'
         size={24}
         style={{
           backgroundColor: '#0005',
           borderRadius: 30,
-          paddingVertical: 5,
-          paddingLeft: 6,
-          paddingRight: 4
+          padding: 10
         }}
       />
     </Container>

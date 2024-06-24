@@ -3,9 +3,9 @@ import { Controller } from 'react-hook-form';
 
 import { Container, Input } from './styles';
 import { Feather } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native';
+import { TextInputProps, TouchableOpacity } from 'react-native';
 
-type Props = {
+type Props = TextInputProps & {
   placeholder?: string;
   filled?: boolean;
   name?: string;
