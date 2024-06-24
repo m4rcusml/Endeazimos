@@ -15,6 +15,7 @@ import firestore from '@react-native-firebase/firestore';
 import { GenericButton } from '@components/GenericButton';
 import { Typography } from '@components/Typography';
 import { Textfield } from '@components/Textfield';
+import { useAuth } from '@contexts/auth';
 
 const SignUpDataSchema = z.object({
   name: z.string({ required_error: 'Preencha este campo' })
@@ -44,10 +45,11 @@ GoogleSignin.configure({
 
 export function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
+  const { fetchUser } = useAuth();
+  const { bottom } = useSafeAreaInsets();
   const { handleSubmit, control, formState: { errors } } = useForm<SignUpDataType>({
     resolver: zodResolver(SignUpDataSchema)
   });
-  const { bottom } = useSafeAreaInsets();
 
   function loginWithGoogle() {
     setIsLoading(true);
@@ -80,6 +82,11 @@ export function SignUp() {
               })
               .then(() => {
                 console.log('User added!');
+
+                const uid = auth().currentUser?.uid;
+                if(uid) {
+                  fetchUser(uid, googleCredentials.user.email);
+                }
               });
           })
           .catch((error) => console.log(error));
@@ -95,7 +102,7 @@ export function SignUp() {
       setIsLoading(true);
       auth()
         .createUserWithEmailAndPassword(data.email, data.password)
-        .then(() => {
+        .then(credentials => {
           firestore()
             .collection('users')
             .add({
@@ -105,6 +112,11 @@ export function SignUp() {
             })
             .then(() => {
               console.log('User added!');
+
+              const uid = auth().currentUser?.uid;
+              if(uid) {
+                fetchUser(uid, credentials.user.email);
+              }
             });
         });
     } catch (error) {

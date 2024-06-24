@@ -20,6 +20,7 @@ import { Textfield } from '@components/Textfield';
 
 import Logo from '@assets/logo.svg';
 import GoogleLogo from '@assets/google-logo.svg';
+import { useAuth } from '@contexts/auth';
 
 const SignInDataSchema = z.object({
   email: z.string({ required_error: 'Preencha este campo' })
@@ -42,6 +43,7 @@ export function SignIn() {
     resolver: zodResolver(SignInDataSchema)
   });
   const { top, bottom } = useSafeAreaInsets();
+  const { fetchUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   function handleCreateAccount() {
@@ -79,6 +81,11 @@ export function SignIn() {
               })
               .then(() => {
                 console.log('User added!');
+
+                const uid = auth().currentUser?.uid;
+                if(uid) {
+                  fetchUser(uid, googleCredentials.user.email);
+                }
               });
           })
           .catch((error) => console.log(error));

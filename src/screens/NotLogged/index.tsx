@@ -15,6 +15,7 @@ import { Typography } from '@components/Typography';
 
 import Logo from '@assets/logo.svg';
 import GoogleLogo from '@assets/google-logo.svg';
+import { useAuth } from '@contexts/auth';
 
 GoogleSignin.configure({
   scopes: ['email', 'profile'],
@@ -26,6 +27,7 @@ export function NotLogged() {
   const [isLoading, setIsLoading] = useState(false);
   const { navigate } = useNavigation<NavigationProp<AuthRoutesParams, 'signin'>>();
   const { top, bottom } = useSafeAreaInsets();
+  const { fetchUser } = useAuth();
 
   function loginWithGoogle() {
     setIsLoading(true);
@@ -58,6 +60,11 @@ export function NotLogged() {
               })
               .then(() => {
                 console.log('User added!');
+
+                const uid = auth().currentUser?.uid;
+                if(uid) {
+                  fetchUser(uid, googleCredentials.user.email);
+                }
               });
           })
           .catch((error) => console.log(error));
