@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { Bell, House, SquaresFour, User } from 'phosphor-react-native';
+import { Bell, Ear, Globe, House, Plus, SquaresFour, User } from 'phosphor-react-native';
 
 import { Home } from '@screens/Home';
 import { Profile } from '@screens/Profile';
@@ -12,6 +12,10 @@ import { EditProfile } from '@screens/Profile/EditProfile';
 import { Contribuinte } from '@screens/Profile/Contribuinte';
 import { Instituicao } from '@screens/Profile/Instituicao';
 import { Forum } from '@screens/Forum';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { StackRoutesParams } from './app.routes';
+import { useAuth } from '@contexts/auth';
 
 const Tab = createBottomTabNavigator();
 
@@ -83,12 +87,15 @@ function ProfileRoutes() {
 }
 
 export function TabRoutes() {
+  const { navigate } = useNavigation<NavigationProp<StackRoutesParams>>();
+  const { user } = useAuth();
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: '#1c7ac7'
+        tabBarActiveTintColor: '#1c7ac7',
       }}
     >
       <Tab.Screen
@@ -96,7 +103,7 @@ export function TabRoutes() {
         component={Home}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <House weight='fill' size={size + 1} color={color} />
+            <House weight='fill' size={size + 2} color={color} />
           )
         }}
       />
@@ -105,16 +112,29 @@ export function TabRoutes() {
         component={Campanhas}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <SquaresFour weight='fill' size={size} color={color} />
+            <SquaresFour weight='fill' size={size + 2} color={color} />
           ),
         }}
       />
+      {user?.type === 'instituicao' && <Tab.Screen
+        name='createPost'
+        component={Forum}
+        options={{
+          tabBarButton: () => (
+            <TouchableOpacity activeOpacity={0.6} style={{ width: 65 }} onPress={() => navigate('createPost')}>
+              <View style={styles.createPostButton}>
+                <Plus size={30} color='white' weight='bold' />
+              </View>
+            </TouchableOpacity>
+          ),
+        }}
+      />}
       <Tab.Screen
         name='forum'
         component={Forum}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <Bell size={size} color={color} weight='fill' />
+            <Globe size={size + 2} color={color} weight='fill' />
           )
         }}
       />
@@ -123,10 +143,29 @@ export function TabRoutes() {
         component={ProfileRoutes}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
-            <User size={size} color={color} weight='fill' />
+            <User size={size + 2} color={color} weight='fill' />
           )
         }}
       />
     </Tab.Navigator>
   )
 }
+
+const styles = StyleSheet.create({
+  createPostButton: {
+    width: 60,
+    height: 60,
+    aspectRatio: 1,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#1c7ac7',
+    position: 'absolute',
+    left: '50%',
+    bottom: 0,
+    transform: [
+      { translateX: -30 },
+      { translateY: -20 }
+    ]
+  }
+});

@@ -1,21 +1,31 @@
-import { Alert, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+
 import { useAuth } from '@contexts/auth';
 
-import Logo from '@assets/logo.svg';
 import { UserCard } from '@components/UserCard';
 import { Typography } from '@components/Typography';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import Logo from '@assets/logo.svg';
 
 export function Instituicao() {
   const { top } = useSafeAreaInsets();
-  const { user, updatePassword } = useAuth();
+  const { user, expand } = useAuth();
   const { goBack } = useNavigation();
 
-  const [password, setPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [cnpj, setCnpj] = useState('');
+  const [cnae, setCnae] = useState('');
+  
+  function handleExpand() {
+    if(cnpj.trim() && cnae.trim()) {
+      expand('instituicao', { cnpj, cnae }).then(() => {
+        Alert.alert('Sucesso', 'Instituição cadastrada com sucesso');
+        goBack();
+      });
+    }
+  }
   
   return (
     <LinearGradient
@@ -41,14 +51,28 @@ export function Instituicao() {
       </View>
 
       <View style={styles.contentCard}>
-        <TextInput placeholder='CNPJ (12.345.678/0001-00)' style={styles.input} placeholderTextColor='#ccc' />
-        <TextInput placeholder='CNAE (12.34-5/67)' style={styles.input} placeholderTextColor='#ccc' />
+        <TextInput
+          placeholder='CNPJ (12.345.678/0001-00)'
+          placeholderTextColor='#ccc'
+          style={styles.input}
+          value={cnpj}
+          onChangeText={setCnpj}
+          keyboardType='numeric'
+          />
+        <TextInput
+          placeholder='CNAE (12.34-5/67)'
+          placeholderTextColor='#ccc'
+          style={styles.input}
+          value={cnae}
+          onChangeText={setCnae}
+          keyboardType='numeric'
+          />
       </View>
 
       <TouchableOpacity
           activeOpacity={0.4}
           style={styles.save}
-          onPress={goBack}
+          onPress={handleExpand}
           children={(
             <Typography weight={600}>
               Salvar

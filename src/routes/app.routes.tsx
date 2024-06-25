@@ -8,13 +8,15 @@ import { CampanhaDetails } from '@screens/CampanhaDetails';
 import { Instituicao } from '@screens/Instituicao';
 import { Voluntariado } from '@screens/Voluntariado';
 import { Contribuir } from '@screens/Contribuir';
+import { CreatePost } from '@screens/CreatePost';
 
 export type StackRoutesParams = {
   main: undefined;
-  instituicao: { data: InstituicaoProps }
-  voluntariado: { data: InstituicaoProps },
+  instituicao: { data: InstituicaoProps };
+  voluntariado: { data: InstituicaoProps };
   campanhaDetails: { data: CampanhaProps };
-  contribuir: { data: CampanhaProps }
+  contribuir: { data: CampanhaProps };
+  createPost: undefined;
 }
 
 const Stack = createNativeStackNavigator<StackRoutesParams>();
@@ -53,6 +55,10 @@ export function StackRoutes() {
       <Stack.Screen
         name='contribuir'
         component={Contribuir}
+      />
+      <Stack.Screen
+        name='createPost'
+        component={CreatePost}
       />
     </Stack.Navigator>
   )

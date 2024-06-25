@@ -5,8 +5,18 @@ import auth from '@react-native-firebase/auth';
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
-export type UserType = {
+type InstituicaoType = {
+  cnpj: string;
+  cnae: string;
+}
+
+type ContribuinteType = {
+  cpf: string;
+}
+
+export type UserType = Partial<InstituicaoType & ContribuinteType> & {
   uid: string;
+  type?: 'normal' | 'instituicao' | 'contribuinte';
   photo?: string;
   name: string;
   email?: string | null;
@@ -19,10 +29,12 @@ interface AuthContextDataType {
   user?: UserType;
 
   logIn(data: { email: string, password: string }): Promise<any>;
-  // signUp(data: UserType): Promise<boolean>;
   logOut(): Promise<void>;
   editProfile(data: Partial<UserType>): void;
   fetchUser(uid: string, email?: string | null): void;
+  expand(to: 'instituicao' | 'contribuinte', data: InstituicaoType | ContribuinteType): Promise<void>;
+
+  // signUp(data: UserType): Promise<boolean>;
   // updatePassword({ password, newPassword }: {
   //   password: string;
   //   newPassword: string;
@@ -82,6 +94,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
+  async function expand(to: 'instituicao' | 'contribuinte', data: InstituicaoType | ContribuinteType) {
+    await firestore().collection('users').where('uid', '==', auth().currentUser?.uid).get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          doc.ref.update({ type: to, ...data });
+        });
+      })
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -91,6 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         fetchUser,
         logOut,
         editProfile,
+        expand
       }}
     >
       {children}

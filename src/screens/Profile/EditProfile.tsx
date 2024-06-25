@@ -33,7 +33,7 @@ export function EditProfile() {
     if (!result.canceled) {
       const newBase64Image = 'data:image/jpeg;base64,' + result.assets[0].base64;
 
-      setImage(newBase64Image);
+      setImage(result.assets[0].uri);
     }
   }
 
@@ -69,7 +69,7 @@ export function EditProfile() {
         activeOpacity={0.4}
         style={styles.save}
         onPress={() => {
-          editProfile({ name: name.trim(), phoneNumber: phone.trim() });
+          editProfile({ name: name.trim(), phoneNumber: phone.trim(), photo: image });
           goBack();
         }}
         children={(

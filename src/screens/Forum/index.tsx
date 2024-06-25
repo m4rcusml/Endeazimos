@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
   },
   scroll: {
     paddingHorizontal: 16,
-    paddingVertical: 20,
+    paddingTop: 20,
+    paddingBottom: 50,
     gap: 30
   }
 });
