@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 import { useAuth } from '@contexts/auth';
 
@@ -17,7 +18,7 @@ export function CreatePost() {
   const { user } = useAuth();
   const { goBack } = useNavigation();
   const { top } = useSafeAreaInsets();
-  const [image, setImage] = useState(user?.photo || '');
+  const [image, setImage] = useState<ImagePicker.ImagePickerAsset>();
 
   async function handleImage() {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -29,25 +30,47 @@ export function CreatePost() {
     });
 
     if (!result.canceled) {
-      const newBase64Image = 'data:image/jpeg;base64,' + result.assets[0].base64;
+      setImage(result.assets[0]);
+    }
+  }
 
-      setImage(result.assets[0].uri);
+  async function uploadImage() {
+    if (image) {
+      const response = await fetch(image.uri);
+      const blob = await response.blob();
+      const filename = image.uri.substring(image.uri.lastIndexOf('/') + 1);
+      var ref = storage().ref().child(filename).put(blob);
+      try {
+        await ref;
+        return filename;
+      } catch (e) {
+        console.log(e);
+      }
     }
   }
 
   function handlePost() {
-    if(user && image) {
-      firestore().collection('posts').add({
-        ownerId: user.uid,
-        image,
-        createdAt: firestore.Timestamp.now(),
-      }).then(() => {
-        Alert.alert('Sucesso', 'Publicação enviada com sucesso.');
-        goBack();
-      });
+    if (user && image) {
+      uploadImage().then((filename) => {
+        if (filename) {
+          firestore().collection('posts').add({
+            ownerId: user.uid,
+            image: filename,
+            createdAt: firestore.Timestamp.now(),
+          })
+            .then(() => {
+              Alert.alert('Sucesso', 'Publicação enviada com sucesso.');
+              goBack();
+            })
+        }
+      })
+        .catch(error => {
+          console.log(error);
+          Alert.alert('Erro', 'Não foi possível enviar a publicação.');
+        })
     }
   }
-  
+
   if (!user) {
     return (
       <LinearGradient
@@ -59,8 +82,18 @@ export function CreatePost() {
     )
   }
 
-  if(user.type !== 'instituicao') {
-    return () => goBack();
+  if (user.type !== 'instituicao') {
+    return (
+      <LinearGradient
+        colors={['#125266', '#104C5F']}
+        style={[styles.background, { paddingTop: top, justifyContent: 'center', alignItems: 'center' }]}
+      >
+        <Typography color='white' size={18}>
+          Você não é uma instituição.
+        </Typography>
+        <GenericButton title='Voltar' onPress={() => goBack()} filled />
+      </LinearGradient>
+    )
   }
 
   return (
@@ -76,7 +109,7 @@ export function CreatePost() {
         <Typography color='white' size={18}>{user.name}</Typography>
       </View>
 
-      <TouchableOpacity style={[styles.imageInput, !!image && { backgroundColor: '#fff4'}]} onPress={handleImage}>
+      <TouchableOpacity style={[styles.imageInput, !!image && { backgroundColor: '#fff4' }]} onPress={handleImage}>
         <Typography color='white' size={16}>
           {!!image ? 'Adicinada com sucesso' : 'Adicione uma imagem'}
         </Typography>
