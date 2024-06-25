@@ -6,10 +6,11 @@ import 'dayjs/locale/pt-br';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 import { UserType, useAuth } from '@contexts/auth';
 
 import { Typography } from '@components/Typography';
-import { Chat, Heart, PlusCircle } from 'phosphor-react-native';
+import { Chat, Heart, PlusCircle, Trash } from 'phosphor-react-native';
 
 dayjs.extend(relativeTime);
 dayjs.locale('pt-br');
@@ -31,6 +32,7 @@ type Props = {
 export function Post({ id }: Props) {
   const [post, setPost] = useState<PostProps>();
   const [owner, setOwner] = useState<UserType>();
+  const [image, setImage] = useState<string>();
   const [isLiked, setIsLiked] = useState(false);
   const [canLike, setCanLike] = useState(true);
   const { user } = useAuth();
@@ -64,19 +66,19 @@ export function Post({ id }: Props) {
   }, [post]);
 
   useEffect(() => {
+    if (user && post) {
+      setIsLiked(!!post.likes?.includes(user.uid))
+      storage().ref(post.image).getDownloadURL().then(setImage);
+    }
+  }, [post?.likes, user]);
+
+  useEffect(() => {
     const unsubscribe = firestore().collection('posts').doc(id).onSnapshot(querySnapshot => {
       setPost(querySnapshot.data() as PostProps);
     });
 
     return () => unsubscribe();
   }, []);
-
-
-  useEffect(() => {
-    if (user && post) {
-      setIsLiked(!!post.likes?.includes(user.uid))
-    }
-  }, [post?.likes, user]);
 
   if (!(post && owner)) {
     return (
@@ -102,14 +104,19 @@ export function Post({ id }: Props) {
         <Typography color='gray' size={14}>{dayjs().to(post.createdAt.toDate())}</Typography>
       </View>
 
-      <Image source={{ uri: post?.image }} style={styles.image} />
+      {!!image
+        ? <Image source={{ uri: image }} style={styles.image} />
+        : <View style={styles.noimage}>
+          <ActivityIndicator size='large' color='black' />
+        </View>}
 
       <View style={styles.footer}>
         <TouchableOpacity
-          // children={(
-          //   <PlusCircle color='#0c4b7e' weight='bold' size={28} />
-          // )}
-        />
+          style={{ alignItems: 'center', gap: 5, flexDirection: 'row' }}
+          onPress={() => { }}
+        >
+          <Trash color='#0c4b7e' weight='bold' size={28} />
+        </TouchableOpacity>
 
         <View style={{ flexDirection: 'row', gap: 20 }}>
           <TouchableOpacity
@@ -150,6 +157,13 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: '4 / 3',
     resizeMode: 'cover'
+  },
+  noimage: {
+    width: '100%',
+    aspectRatio: '4 / 3',
+    backgroundColor: 'gray',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   footer: {
     paddingVertical: 10,

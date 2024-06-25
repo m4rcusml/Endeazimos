@@ -19,6 +19,7 @@ export function CreatePost() {
   const { goBack } = useNavigation();
   const { top } = useSafeAreaInsets();
   const [image, setImage] = useState<ImagePicker.ImagePickerAsset>();
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleImage() {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -51,6 +52,7 @@ export function CreatePost() {
 
   function handlePost() {
     if (user && image) {
+      setIsLoading(true);
       uploadImage().then((filename) => {
         if (filename) {
           firestore().collection('posts').add({
@@ -62,9 +64,15 @@ export function CreatePost() {
               Alert.alert('Sucesso', 'Publicação enviada com sucesso.');
               goBack();
             })
+            .catch(error => {
+              setIsLoading(false);
+              console.log(error);
+              Alert.alert('Erro', 'Não foi possível enviar a publicação.');
+            });
         }
       })
         .catch(error => {
+          setIsLoading(false);
           console.log(error);
           Alert.alert('Erro', 'Não foi possível enviar a publicação.');
         })
@@ -82,7 +90,7 @@ export function CreatePost() {
     )
   }
 
-  if (user.type !== 'instituicao') {
+  if (user.type === 'instituicao' || user.type === 'contribuinte') {
     return (
       <LinearGradient
         colors={['#125266', '#104C5F']}
@@ -111,11 +119,11 @@ export function CreatePost() {
 
       <TouchableOpacity style={[styles.imageInput, !!image && { backgroundColor: '#fff4' }]} onPress={handleImage}>
         <Typography color='white' size={16}>
-          {!!image ? 'Adicinada com sucesso' : 'Adicione uma imagem'}
+          {!!image ? 'Adicionada com sucesso' : 'Adicione uma imagem'}
         </Typography>
       </TouchableOpacity>
 
-      <GenericButton title='Publicar' onPress={handlePost} filled />
+      <GenericButton title='Publicar' onPress={handlePost} disabled={isLoading} filled />
     </LinearGradient>
   )
 }

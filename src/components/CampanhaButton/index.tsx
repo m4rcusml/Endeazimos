@@ -29,7 +29,7 @@ export function CampanhaButton({ id }: Props) {
   const [campanha, setCampanha] = useState<CampanhaProps>();
 
   useEffect(() => {
-    const unsubscribe = firestore().collection('campanha').doc(id).onSnapshot(querySnapshot => {
+    const unsubscribe = firestore().collection('campanhas').doc(id).onSnapshot(querySnapshot => {
       setCampanha(querySnapshot.data() as CampanhaProps);
     });
 

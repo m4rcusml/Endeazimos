@@ -10,12 +10,12 @@ import { Typography } from '@components/Typography';
 
 export function Campanhas() {
   const { top } = useSafeAreaInsets();
-  const [campanhas, setCampanhas] = useState<{id: string}[]>([]);
+  const [campanhas, setCampanhas] = useState<{ id: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   function fetchCampanhas() {
     setIsLoading(true);
-    firestore().collection('campanha').get()
+    firestore().collection('campanhas').get()
       .then(response => {
         setCampanhas(response.docs.map(doc => ({
           id: doc.id
@@ -23,7 +23,7 @@ export function Campanhas() {
         setIsLoading(false);
       });
   }
-  
+
   useEffect(() => {
     fetchCampanhas();
   }, []);
@@ -41,7 +41,7 @@ export function Campanhas() {
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={styles.scroll}
         ListEmptyComponent={() => (
-          !isLoading && <Typography style={{ paddingVertical: 20 }}>Nada encontrado</Typography>
+          !isLoading && <Typography style={{ paddingVertical: 20 }} alignment='center' color='gray'>Nada encontrado</Typography>
         )}
       />
     </LinearGradient>

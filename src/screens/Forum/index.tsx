@@ -16,7 +16,7 @@ export function Forum() {
 
   function fetchPosts() {
     setIsLoading(true);
-    firestore().collection('posts').get()
+    firestore().collection('posts').orderBy('createdAt', 'desc').get()
       .then(response => {
         setCampanhas(response.docs.map(doc => ({
           id: doc.id
@@ -42,7 +42,7 @@ export function Forum() {
         keyExtractor={(item) => String(item.id)}
         contentContainerStyle={styles.scroll}
         ListEmptyComponent={() => (
-          !isLoading && <Typography style={{ paddingVertical: 20 }}>Nada encontrado</Typography>
+          !isLoading && <Typography style={{ paddingVertical: 20 }} alignment='center' color='gray'>Nada encontrado</Typography>
         )}
       />
     </LinearGradient>

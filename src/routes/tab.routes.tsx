@@ -116,7 +116,7 @@ export function TabRoutes() {
           ),
         }}
       />
-      {user?.type === 'instituicao' && <Tab.Screen
+      {(user?.type === 'instituicao' || user?.type === 'contribuinte') && <Tab.Screen
         name='createPost'
         component={Forum}
         options={{
